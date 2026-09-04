@@ -4,11 +4,11 @@
 
 
 
-RaceDay is a full-stack, API-driven event management system built for the South African road running, walking, and cycling community. It allows Event Organisers to create and manage events, categories, and results, while Participants can browse events, enrol in categories, and track their personal results.
+RaceDay is a full-stack, API-driven event management system built for the South African road running, walking, and cycling community. It allows Event Organizers to create and manage events, categories, and results, while Participants can browse events, enroll in categories, and track their personal results.
 
 
 
-This repository contains \*\*Part 1: System Planning and Database\*\* — the Entity Relationship Diagram, API endpoint plan, and SQL Server database script that form the foundation for the RESTful API (Part 2) and MVC web application (Part 3).
+This repository contains Part 1: System Planning and Database — the Entity Relationship Diagram, API endpoint plan, and SQL Server database script that form the foundation for the API (Part 2) and MVC web application (Part 3).
 
 
 
@@ -16,7 +16,7 @@ System Roles
 
 
 
-Organiser:
+Organizer:
 
 \- Create, edit, and delete events
 
@@ -46,7 +46,7 @@ Participant:
 
 &#x20;`RaceDay\_ERD.png` | Entity Relationship Diagram — 6 entities with PK/FK and cardinality 
 
-&#x20;`RaceDay\_API\_Endpoint\_Plan.md` | Full API endpoint plan for Part 2 
+&#x20;`RaceDay\_API\_Endpoint\_Plan.pdf` | Full API endpoint plan for Part 2 |
 
 &#x20;`RaceDay\_Database\_Script.sql` | SQL Server script — schema creation and seed data 
 
