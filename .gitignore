@@ -1,0 +1,14 @@
+# SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+# Visual Studio / .NET (for future parts)
+bin/
+obj/
+*.user
+.vs/
+
+# OS files
+.DS_Store
+Thumbs.db
