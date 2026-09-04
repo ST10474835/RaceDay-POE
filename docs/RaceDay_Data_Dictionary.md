@@ -19,3 +19,27 @@ Full column-by-column reference for every table in the RaceDay database, matchin
 | PasswordHash | VARCHAR(255) | NOT NULL | The hashed (never plain-text) password |
 | RoleID | INT | FK → Roles(RoleID), NOT NULL | Links the user to their role (Organiser or Participant) |
 | DateRegistered | DATETIME | NOT NULL, DEFAULT GETDATE() | Automatically records when the account was created |
+
+
+## Events
+
+| Column | Type | Constraints | Purpose |
+|---|---|---|---|
+| EventID | INT | PK, IDENTITY | Uniquely identifies each event |
+| OrganiserID | INT | FK → Users(UserID), NOT NULL | Links the event to the organiser who created it |
+| EventName | VARCHAR(150) | NOT NULL | The event's name |
+| Description | VARCHAR(500) | NULL | Optional details about the event |
+| EventDate | DATE | NOT NULL | The date the event takes place |
+| Location | VARCHAR(150) | NOT NULL | Where the event is held |
+| Distance | DECIMAL(5,2) | NOT NULL | The event's overall distance |
+| EventType | VARCHAR(10) | NOT NULL, CHECK IN ('Run','Walk','Cycle') | Restricts the event to one of three valid types |
+| DateCreated | DATETIME | NOT NULL, DEFAULT GETDATE() | Automatically records when the event was created |
+
+## Categories
+
+| Column | Type | Constraints | Purpose |
+|---|---|---|---|
+| CategoryID | INT | PK, IDENTITY | Uniquely identifies each category |
+| EventID | INT | FK → Events(EventID), NOT NULL | Links the category to its parent event |
+| CategoryName | VARCHAR(50) | NOT NULL | The category's name (e.g. "10km" or "Under 20") |
+| CategoryType | VARCHAR(10) | NOT NULL, CHECK IN ('Age','Distance') | Identifies whether the category is age-based or distance-based |
