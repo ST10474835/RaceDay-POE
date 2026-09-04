@@ -30,7 +30,7 @@ jobs:
           fi
           echo "ERD file found."
 
-            - name: Check API endpoint plan exists
+      - name: Check API endpoint plan exists
         run: |
           if [ ! -f "docs/RaceDay_API_Endpoint_Plan.pdf" ]; then
             echo "ERROR: RaceDay_API_Endpoint_Plan.pdf is missing from /docs."
@@ -47,4 +47,4 @@ jobs:
           echo "SQL script found."
 
       - name: All required files present
-        run: echo "✅ Part 1 documentation structure validated successfully."
+        run: echo "Part 1 documentation structure validated successfully."
