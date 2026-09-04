@@ -71,3 +71,11 @@ INNER JOIN Users ON Enrolments.ParticipantID = Users.UserID
 INNER JOIN Categories ON Enrolments.CategoryID = Categories.CategoryID
 INNER JOIN Events ON Categories.EventID = Events.EventID
 ORDER BY Events.EventName;
+
+
+-- 7. Constraint enforcement test:
+-- This INSERT is EXPECTED TO FAIL, proving the UNIQUE
+-- constraint on (ParticipantID, CategoryID) in Enrolments
+-- correctly prevents duplicate enrolments.
+-- (ParticipantID 3, CategoryID 1 already exists in seed data.)
+INSERT INTO Enrolments (ParticipantID, CategoryID) VALUES (3, 1);
