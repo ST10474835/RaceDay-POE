@@ -10,3 +10,8 @@ Rather than adding a plain `Role VARCHAR` column directly to `Users`, I created 
 ## 2. Flexible category typing (Age or Distance)
 
 The assignment's functional requirements state categories can be either age-based (e.g. "Under 20", "Senior") or distance-based (e.g. "10km", "21km"). Rather than forcing every category to have a numeric distance value (which wouldn't make sense for an age category), I used a free-text `CategoryName` column paired with a `CategoryType` column restricted to `'Age'` or `'Distance'` via a CHECK constraint. This keeps the table flexible enough to represent both category styles without null or meaningless columns for one type or the other.
+
+
+## 3. Avoiding a redundant EventID on Enrolments
+
+The functional requirements state the system must record the link between the Participant, the Event, and the selected Category. Since every `Category` already belongs to exactly one `Event` (via `Categories.EventID`), the event is always derivable by joining `Enrolments` → `Categories` → `Events`. I deliberately did not add a second, duplicate `EventID` column directly on `Enrolments`, since storing the same relationship in two places risks the two values going out of sync — a normalization anti-pattern. The event is still fully queryable and correctly enforced through the existing foreign key chain.
