@@ -43,3 +43,24 @@ Full column-by-column reference for every table in the RaceDay database, matchin
 | EventID | INT | FK → Events(EventID), NOT NULL | Links the category to its parent event |
 | CategoryName | VARCHAR(50) | NOT NULL | The category's name (e.g. "10km" or "Under 20") |
 | CategoryType | VARCHAR(10) | NOT NULL, CHECK IN ('Age','Distance') | Identifies whether the category is age-based or distance-based |
+
+
+## Enrolments
+
+| Column | Type | Constraints | Purpose |
+|---|---|---|---|
+| EnrolmentID | INT | PK, IDENTITY | Uniquely identifies each enrolment |
+| ParticipantID | INT | FK → Users(UserID), NOT NULL | Links the enrolment to the participant |
+| CategoryID | INT | FK → Categories(CategoryID), NOT NULL | Links the enrolment to the chosen category (and therefore its event) |
+| EnrolmentDate | DATETIME | NOT NULL, DEFAULT GETDATE() | Automatically records when the participant enrolled |
+| — | — | UNIQUE (ParticipantID, CategoryID) | Prevents a participant from enrolling in the same category twice |
+
+## Results
+
+| Column | Type | Constraints | Purpose |
+|---|---|---|---|
+| ResultID | INT | PK, IDENTITY | Uniquely identifies each result |
+| EnrolmentID | INT | FK → Enrolments(EnrolmentID), NOT NULL, UNIQUE | Links the result to exactly one enrolment |
+| FinishTime | TIME | NULL | The participant's finish time |
+| Position | INT | NULL | The participant's finishing position |
+| DateCaptured | DATETIME | NOT NULL, DEFAULT GETDATE() | Automatically records when the result was entered |
