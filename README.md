@@ -25,6 +25,8 @@ This repository contains **Part 1: System Planning and Database** — the Entity
 | `RaceDay_ERD.png` | Entity Relationship Diagram — 6 entities with PK/FK and cardinality |
 | `RaceDay_API_Endpoint_Plan.pdf` | Full API endpoint plan for Part 2 |
 | `RaceDay_Database_Script.sql` | SQL Server script — schema creation and seed data |
+| `RaceDay_Data_Dictionary.md` | Full column-by-column reference for every table |
+| `RaceDay_Design_Decisions.md` | Explanation of key database design choices |
 
 ## Database Design
 The system is modelled around 6 entities: `Roles`, `Users`, `Events`, `Categories`, `Enrolments`, and `Results`. `Enrolments` acts as the junction table resolving the many-to-many relationship between Participants and Categories. See `/docs/RaceDay_ERD.png` for the full diagram.
