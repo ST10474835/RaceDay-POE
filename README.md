@@ -39,7 +39,7 @@ This repository uses GitHub Actions to validate that all required Part 1 plannin
 ![CI/CD Green Build](docs/cicd-success-screenshot.png)
 
 ## Video Walkthrough
-[Part 1 Video Walkthrough](YOUR_YOUTUBE_LINK_HERE)
+[Part 1 Video Walkthrough]([https://youtu.be/OgKYKh20pZk]
 
 ## How to Run the SQL Script
 1. Open SQL Server Management Studio (SSMS)
