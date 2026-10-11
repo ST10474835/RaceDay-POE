@@ -20,8 +20,10 @@ namespace RaceDay.Api.Controllers
         }
 
         /// <summary>
-        /// Returns the logged-in user's own profile details.
+        /// Returns the logged-in user's own profile details. Any logged-in role.
         /// </summary>
+        /// <response code="200">Returns full name, email, role and registration date.</response>
+        /// <response code="401">Not logged in.</response>
         [HttpGet("profile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -46,8 +48,12 @@ namespace RaceDay.Api.Controllers
         }
 
         /// <summary>
-        /// Updates the logged-in user's own full name and email.
+        /// Updates the logged-in user's own full name and email. Any logged-in role.
         /// </summary>
+        /// <param name="dto">The new full name and email address.</param>
+        /// <response code="200">Profile updated. Returns the updated profile.</response>
+        /// <response code="400">Invalid data, or the email address is already used by another account.</response>
+        /// <response code="401">Not logged in.</response>
         [HttpPut("profile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
