@@ -35,8 +35,10 @@ namespace RaceDay.Api.Controllers
         };
 
         /// <summary>
-        /// Lists all events. Available to any logged-in user.
+        /// Lists all events, ordered by date. Any logged-in role.
         /// </summary>
+        /// <response code="200">Returns every event with its organiser name.</response>
+        /// <response code="401">Not logged in.</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -51,8 +53,12 @@ namespace RaceDay.Api.Controllers
         }
 
         /// <summary>
-        /// Returns the details of a single event. Available to any logged-in user.
+        /// Returns the details of a single event. Any logged-in role.
         /// </summary>
+        /// <param name="id">The event's ID.</param>
+        /// <response code="200">Returns the event.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="404">No event exists with this ID.</response>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -72,6 +78,11 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Creates a new event owned by the logged-in organiser. Organiser only.
         /// </summary>
+        /// <param name="dto">Event name, optional description, date (yyyy-MM-dd), location, distance and event type ("Run", "Walk" or "Cycle").</param>
+        /// <response code="201">Event created. Returns the new event.</response>
+        /// <response code="400">Missing or invalid fields, for example an event type that is not Run, Walk or Cycle.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant.</response>
         [HttpPost]
         [SessionAuthorize("Organiser")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -101,6 +112,13 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Updates an existing event. Only the organiser who created it may do this.
         /// </summary>
+        /// <param name="id">The ID of the event to update.</param>
+        /// <param name="dto">The full set of event details, in the same shape as when creating an event.</param>
+        /// <response code="200">Event updated. Returns the updated event.</response>
+        /// <response code="400">Missing or invalid fields.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant, or the event belongs to another organiser.</response>
+        /// <response code="404">No event exists with this ID.</response>
         [HttpPut("{id:int}")]
         [SessionAuthorize("Organiser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -134,9 +152,13 @@ namespace RaceDay.Api.Controllers
         }
 
         /// <summary>
-        /// Deletes an event and its categories, enrolments and results.
-        /// Only the organiser who created it may do this.
+        /// Deletes an event together with its categories, enrolments and results. Only the organiser who created it may do this.
         /// </summary>
+        /// <param name="id">The ID of the event to delete.</param>
+        /// <response code="200">Event and its dependent records deleted.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant, or the event belongs to another organiser.</response>
+        /// <response code="404">No event exists with this ID.</response>
         [HttpDelete("{id:int}")]
         [SessionAuthorize("Organiser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -154,8 +176,7 @@ namespace RaceDay.Api.Controllers
                 return StatusCode(StatusCodes.Status403Forbidden,
                     new { message = "You can only delete events that you created." });
 
-            // The database uses NO ACTION foreign keys (as in the Part 1 script),
-            // so dependent rows are removed explicitly, all in one SaveChanges transaction.
+          
             var categories = await _context.Categories.Where(c => c.EventID == id).ToListAsync();
             var categoryIds = categories.Select(c => c.CategoryID).ToList();
             var enrolments = await _context.Enrolments
