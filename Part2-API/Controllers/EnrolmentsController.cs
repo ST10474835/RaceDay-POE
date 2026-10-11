@@ -23,6 +23,12 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Enrols the logged-in participant into a chosen category, linking the participant, the event and the category. Participant only.
         /// </summary>
+        /// <param name="dto">The ID of the category to enter.</param>
+        /// <response code="201">Enrolment recorded. Returns the enrolment with its category and event.</response>
+        /// <response code="400">The category ID is missing or the category does not exist.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as an Organiser.</response>
+        /// <response code="409">The participant is already enrolled in this category.</response>
         [HttpPost("enrolments")]
         [SessionAuthorize("Participant")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -72,6 +78,9 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Returns all of the logged-in participant's own enrolments. Participant only.
         /// </summary>
+        /// <response code="200">Returns the participant's enrolments with category and event details.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as an Organiser.</response>
         [HttpGet("enrolments/mine")]
         [SessionAuthorize("Participant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -103,6 +112,11 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Returns all enrolments for an event, with participant details. Only the organiser who created the event may do this.
         /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <response code="200">Returns every enrolment for the event.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant, or the event belongs to another organiser.</response>
+        /// <response code="404">No event exists with this ID.</response>
         [HttpGet("events/{eventId:int}/enrolments")]
         [SessionAuthorize("Organiser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
