@@ -18,9 +18,15 @@ namespace RaceDay.Api.Controllers
             _context = context;
         }
 
+
         /// <summary>
         /// Creates a new user account with a chosen role (Organiser or Participant).
         /// </summary>
+        /// <param name="dto">Full name, email, password (8 to 72 characters) and role ("Organiser" or "Participant").</param>
+        /// <response code="201">Account created. Returns the new user's ID, name, email and role.</response>
+        /// <response code="400">Missing or invalid fields, or the role is not Organiser or Participant.</response>
+        /// <response code="409">An account with this email already exists.</response>
+
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,6 +65,10 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Authenticates a user and starts a server-side session storing their user ID and role.
         /// </summary>
+        /// <param name="dto">The account's email and password.</param>
+        /// <response code="200">Login successful and session created. Returns the user's ID, name, email and role.</response>
+        /// <response code="401">Invalid email or password.</response>
+        
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -88,6 +98,8 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Ends the current user's session.
         /// </summary>
+        /// <response code="200">Session ended.</response>
+        /// <response code="401">No active session, so the user is not logged in.</response>
         [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
