@@ -21,8 +21,12 @@ namespace RaceDay.Api.Controllers
         }
 
         /// <summary>
-        /// Lists all age and distance categories defined for an event. Available to any logged-in user.
+        /// Lists all age and distance categories defined for an event. Any logged-in role.
         /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <response code="200">Returns the event's categories.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="404">No event exists with this ID.</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -50,6 +54,13 @@ namespace RaceDay.Api.Controllers
         /// <summary>
         /// Defines a new age or distance category for an event. Only the organiser who created the event may do this.
         /// </summary>
+        /// <param name="eventId">The ID of the event the category belongs to.</param>
+        /// <param name="dto">Category name (for example "10km" or "Under 20") and category type ("Age" or "Distance").</param>
+        /// <response code="201">Category created. Returns the new category.</response>
+        /// <response code="400">Missing or invalid fields, for example a category type that is not Age or Distance.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant, or the event belongs to another organiser.</response>
+        /// <response code="404">No event exists with this ID.</response>
         [HttpPost]
         [SessionAuthorize("Organiser")]
         [ProducesResponseType(StatusCodes.Status201Created)]
