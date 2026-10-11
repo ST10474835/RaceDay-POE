@@ -20,9 +20,18 @@ namespace RaceDay.Api.Controllers
             _context = context;
         }
 
-        
+
+        /// <summary>
         /// Captures a finish time and finishing position for a participant's enrolment. Only the organiser who created the event may do this.
-        
+        /// </summary>
+        /// <param name="dto">The enrolment ID, finish time (HH:mm:ss) and finishing position.</param>
+        /// <response code="201">Result captured. Returns the result with participant, event and category.</response>
+        /// <response code="400">Missing or invalid fields, for example a finish time that is not HH:mm:ss.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant, or the enrolment belongs to another organiser's event.</response>
+        /// <response code="404">No enrolment exists with this ID.</response>
+        /// <response code="409">A result has already been captured for this enrolment.</response>
+
         [HttpPost]
         [SessionAuthorize("Organiser")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -72,9 +81,14 @@ namespace RaceDay.Api.Controllers
             });
         }
 
-        
+
+        /// <summary>
         /// Returns the logged-in participant's own results. Participant only.
-       
+        /// </summary>
+        /// <response code="200">Returns the participant's results with event, category, finish time and position.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as an Organiser.</response>
+
         [HttpGet("mine")]
         [SessionAuthorize("Participant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
