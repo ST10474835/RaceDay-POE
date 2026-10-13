@@ -24,4 +24,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Remove="RaceDay.Api.Tests\**" />
+		<Content Remove="RaceDay.Api.Tests\**" />
+		<EmbeddedResource Remove="RaceDay.Api.Tests\**" />
+		<None Remove="RaceDay.Api.Tests\**" />
+	</ItemGroup>
+
 </Project>
+
