@@ -12,6 +12,7 @@ namespace RaceDay.Api.Filters
     public class SessionAuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         private readonly string[] _roles;
+        public string[] Roles => _roles;
 
         public SessionAuthorizeAttribute(params string[] roles)
         {
