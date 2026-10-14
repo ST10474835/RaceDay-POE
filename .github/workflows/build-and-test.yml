@@ -14,9 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         
-      - name: List repository files (temporary diagnostic)
-        run: git ls-files Part2-API | cat -A
-        
       - name: Set up .NET 8
         uses: actions/setup-dotnet@v4
         with:
