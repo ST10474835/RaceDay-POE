@@ -211,3 +211,4 @@ namespace RaceDay.Api.Tests
             Assert.Contains(errors, e => e.MemberNames.Contains("Distance"));
         }
     }
+}
