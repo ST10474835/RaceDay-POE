@@ -130,5 +130,3 @@ GitHub Actions builds the API and runs all unit tests on every push (`.github/wo
 - Deleting an event also deletes its categories, enrolments and results in one transaction. The foreign keys use NO ACTION (as in the Part 1 script), so the API performs the clean-up itself.
 - As in the plan, users choose their own role when registering. In a production system, Organiser accounts would normally be approved or invited.
 
-## AI usage disclosure
-An AI assistant (Claude by Anthropic) was used for planning guidance, code scaffolding and troubleshooting. I reviewed, ran and tested the code myself, and I can explain how it works.
