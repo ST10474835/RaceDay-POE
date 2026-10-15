@@ -130,3 +130,9 @@ GitHub Actions builds the API and runs all unit tests on every push (`.github/wo
 - Deleting an event also deletes its categories, enrolments and results in one transaction. The foreign keys use NO ACTION (as in the Part 1 script), so the API performs the clean-up itself.
 - As in the plan, users choose their own role when registering. In a production system, Organiser accounts would normally be approved or invited.
 
+## Part 2: RESTful API
+The ASP.NET Core Web API, its unit tests and its CI workflow are in the [`Part2-API`](Part2-API) folder. See [`Part2-API/README.md`](Part2-API/README.md) for setup and run instructions, the role descriptions, the CI/CD screenshots and the video link.
+
+[![Build and Test API](https://github.com/ST10474835/RaceDay-POE/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/ST10474835/RaceDay-POE/actions/workflows/build-and-test.yml)
+
+
