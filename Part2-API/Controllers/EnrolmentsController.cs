@@ -71,8 +71,9 @@ namespace RaceDay.Api.Controllers
                 categoryName = category.CategoryName,
                 eventId = category.EventID,
                 eventName = category.Event!.EventName,
-                enrolmentDate = enrolment.EnrolmentDate
-            });
+                enrolmentDate = enrolment.EnrolmentDate,
+                status = enrolment.Status
+        });
         }
 
         /// <summary>
@@ -102,7 +103,8 @@ namespace RaceDay.Api.Controllers
                     eventId = e.Category.EventID,
                     eventName = e.Category.Event!.EventName,
                     eventDate = e.Category.Event.EventDate,
-                    enrolmentDate = e.EnrolmentDate
+                    enrolmentDate = e.EnrolmentDate,
+                    status = e.Status
                 })
                 .ToListAsync();
 
@@ -146,11 +148,46 @@ namespace RaceDay.Api.Controllers
                     participantEmail = e.Participant.Email,
                     categoryId = e.CategoryID,
                     categoryName = e.Category!.CategoryName,
-                    enrolmentDate = e.EnrolmentDate
+                    enrolmentDate = e.EnrolmentDate,
+                    status = e.Status
                 })
                 .ToListAsync();
 
             return Ok(enrolments);
+        }
+
+        /// <summary>
+        /// Marks an enrolment as Confirmed. Only the organiser who created the event may do this.
+        /// </summary>
+        /// <param name="id">The enrolment ID.</param>
+        /// <response code="200">Enrolment confirmed.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant, or the event belongs to another organiser.</response>
+        /// <response code="404">No enrolment exists with this ID.</response>
+        [HttpPut("enrolments/{id:int}/confirm")]
+        [SessionAuthorize("Organiser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ConfirmEnrolment(int id)
+        {
+            var enrolment = await _context.Enrolments
+                .Include(e => e.Category)
+                    .ThenInclude(c => c!.Event)
+                .FirstOrDefaultAsync(e => e.EnrolmentID == id);
+
+            if (enrolment == null)
+                return NotFound(new { message = "Enrolment not found." });
+
+            if (enrolment.Category!.Event!.OrganiserID != HttpContext.Session.GetUserId())
+                return StatusCode(StatusCodes.Status403Forbidden,
+                    new { message = "You can only confirm enrolments for events that you created." });
+
+            enrolment.Status = "Confirmed";
+            await _context.SaveChangesAsync();
+
+            return Ok(new { enrolmentId = enrolment.EnrolmentID, status = enrolment.Status });
         }
     }
 }
