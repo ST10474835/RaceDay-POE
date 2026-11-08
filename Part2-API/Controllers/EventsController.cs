@@ -31,8 +31,9 @@ namespace RaceDay.Api.Controllers
             location = e.Location,
             distance = e.Distance,
             eventType = e.EventType,
-            dateCreated = e.DateCreated
-        };
+            dateCreated = e.DateCreated,
+            bannerUrl = e.BannerUrl
+    };
 
         /// <summary>
         /// Lists all events, ordered by date. Any logged-in role.
