@@ -1,10 +1,15 @@
+using Azure.Storage.Blobs;
+using RaceDay.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
 using System.Reflection;
 
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddSingleton(_ => new BlobServiceClient(builder.Configuration["AzureStorage:ConnectionString"]));
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
