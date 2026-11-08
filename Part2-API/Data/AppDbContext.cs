@@ -35,6 +35,7 @@ namespace RaceDay.Api.Data
                 e.Property(u => u.Email).HasMaxLength(150).IsUnicode(false);
                 e.Property(u => u.PasswordHash).HasMaxLength(255).IsUnicode(false);
                 e.Property(u => u.DateRegistered).HasDefaultValueSql("GETDATE()");
+                e.Property(u => u.ProfilePictureUrl).HasMaxLength(500).IsUnicode(false);
                 e.HasIndex(u => u.Email).IsUnique();
 
                 e.HasOne(u => u.Role)
@@ -52,6 +53,7 @@ namespace RaceDay.Api.Data
                 e.Property(x => x.Distance).HasColumnType("decimal(5,2)");
                 e.Property(x => x.EventType).HasMaxLength(10).IsUnicode(false);
                 e.Property(x => x.DateCreated).HasDefaultValueSql("GETDATE()");
+                e.Property(x => x.BannerUrl).HasMaxLength(500).IsUnicode(false);
 
                 e.ToTable(t => t.HasCheckConstraint(
                     "CK_Events_EventType", "[EventType] IN ('Run', 'Walk', 'Cycle')"));
@@ -81,6 +83,8 @@ namespace RaceDay.Api.Data
             modelBuilder.Entity<Enrolment>(e =>
             {
                 e.Property(x => x.EnrolmentDate).HasDefaultValueSql("GETDATE()");
+                e.Property(x => x.Status).HasMaxLength(10).IsUnicode(false).HasDefaultValue("Pending");
+                e.ToTable(t => t.HasCheckConstraint("CK_Enrolments_Status", "[Status] IN ('Pending', 'Confirmed')"));
 
                 // A participant cannot enrol in the same category twice
                 e.HasIndex(x => new { x.ParticipantID, x.CategoryID }).IsUnique();
