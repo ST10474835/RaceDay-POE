@@ -20,6 +20,8 @@ namespace RaceDay.Api.Models
 
         public DateTime DateRegistered { get; set; }
 
+        public string? ProfilePictureUrl { get; set; }
+
         // Events this user created (when the user is an Organiser)
         public ICollection<Event> Events { get; set; } = new List<Event>();
 
