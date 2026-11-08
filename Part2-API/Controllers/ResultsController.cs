@@ -118,5 +118,45 @@ namespace RaceDay.Api.Controllers
 
             return Ok(results);
         }
+
+        /// <summary>
+        /// Lists the results captured so far for an event. Only the organiser who created the event may do this.
+        /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <response code="200">Returns the captured results for the event.</response>
+        /// <response code="401">Not logged in.</response>
+        /// <response code="403">Logged in as a Participant, or the event belongs to another organiser.</response>
+        /// <response code="404">No event exists with this ID.</response>
+        [HttpGet("~/api/events/{eventId:int}/results")]
+        [SessionAuthorize("Organiser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetEventResults(int eventId)
+        {
+            var ev = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
+
+            if (ev == null)
+                return NotFound(new { message = "Event not found." });
+
+            if (ev.OrganiserID != HttpContext.Session.GetUserId())
+                return StatusCode(StatusCodes.Status403Forbidden,
+                    new { message = "You can only view results for events that you created." });
+
+            var results = await _context.Results
+                .Where(r => r.Enrolment!.Category!.EventID == eventId)
+                .OrderBy(r => r.Position)
+                .Select(r => new
+                {
+                    resultId = r.ResultID,
+                    enrolmentId = r.EnrolmentID,
+                    finishTime = r.FinishTime,
+                    position = r.Position
+                })
+                .ToListAsync();
+
+            return Ok(results);
+        }
     }
 }
