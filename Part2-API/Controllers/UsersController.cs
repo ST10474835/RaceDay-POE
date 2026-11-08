@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
@@ -83,8 +84,9 @@ namespace RaceDay.Api.Controllers
                 fullName = user.FullName,
                 email = user.Email,
                 role = user.Role!.RoleName,
-                dateRegistered = user.DateRegistered
-            });
+                dateRegistered = user.DateRegistered,
+                profilePictureUrl = user.ProfilePictureUrl
+        });
         }
     }
 }
