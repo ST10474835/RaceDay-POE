@@ -28,6 +28,8 @@ namespace RaceDay.Api.Models
 
         public DateTime DateCreated { get; set; }
 
+        public string? BannerUrl { get; set; }
+
         public ICollection<Category> Categories { get; set; } = new List<Category>();
     }
 }
