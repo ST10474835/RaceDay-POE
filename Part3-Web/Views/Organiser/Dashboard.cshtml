@@ -1,0 +1,83 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var today = DateOnly.FromDateTime(DateTime.Today);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Organiser dashboard</h2>
+    <a class="btn btn-rd" asp-action="CreateEvent">+ New event</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card rd-card p-3 text-center"><div class="rd-stat">@Model.TotalEvents</div><div>Events created</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card rd-card p-3 text-center"><div class="rd-stat">@Model.TotalEnrolments</div><div>Total enrolments</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card rd-card p-3 text-center"><div class="rd-stat">@Model.PendingEnrolments</div><div>Awaiting confirmation</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card rd-card p-3 text-center"><div class="rd-stat">@Model.UpcomingCount</div><div>Upcoming events</div></div>
+    </div>
+</div>
+
+@if (Model.NextEvent != null)
+{
+    var next = Model.NextEvent;
+    var days = next.Event.EventDate.DayNumber - today.DayNumber;
+    <div class="card rd-card p-4 mb-4 border-start border-5 border-warning">
+        <div class="text-muted text-uppercase small">Next event</div>
+        <h4 class="mb-1">@UiHelper.TypeIcon(next.Event.EventType) @next.Event.EventName</h4>
+        <div>
+            @next.Event.EventDate.ToString("dd MMM yyyy") &middot; @next.Event.Location &middot;
+            @(days == 0 ? "today" : days == 1 ? "tomorrow" : $"in {days} days") &middot;
+            @next.EnrolmentCount enrolled
+        </div>
+    </div>
+}
+
+<div class="card rd-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th>Event</th><th>Date</th><th>Type</th><th>Enrolments</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Rows.OrderBy(r => r.Event.EventDate))
+                {
+                    var isUpcoming = row.Event.EventDate >= today;
+                    <tr>
+                        <td>
+                            <strong>@row.Event.EventName</strong>
+                            @if (isUpcoming)
+                            {
+                                <span class="badge bg-warning text-dark ms-1">Upcoming</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary ms-1">Past</span>
+                            }
+                        </td>
+                        <td>@row.Event.EventDate.ToString("dd MMM yyyy")</td>
+                        <td><span class="badge rd-type">@UiHelper.TypeIcon(row.Event.EventType) @row.Event.EventType</span></td>
+                        <td>
+                            <strong>@row.EnrolmentCount</strong>
+                            <span class="text-muted small">(@row.Confirmed confirmed, @row.Pending pending)</span>
+                        </td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-rd" asp-action="Enrolments" asp-route-eventId="@row.Event.EventId">Enrolments</a>
+                            <a class="btn btn-sm btn-outline-rd" asp-action="Results" asp-route-eventId="@row.Event.EventId">Results</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Rows.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-4">You have not created any events yet. Click "New event" to start.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
