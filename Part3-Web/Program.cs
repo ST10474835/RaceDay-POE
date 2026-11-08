@@ -1,6 +1,10 @@
+using System.Globalization;
 using RaceDay.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+// Use '.' for decimals and English dates regardless of the computer's regional settings
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
@@ -8,6 +12,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.Name = ".RaceDay.Web.Session";
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
