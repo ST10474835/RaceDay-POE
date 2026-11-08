@@ -12,6 +12,8 @@ namespace RaceDay.Api.Models
 
         public DateTime EnrolmentDate { get; set; }
 
+        public string Status { get; set; } = "Pending";
+
         // One enrolment has at most one result (1:1)
         public Result? Result { get; set; }
     }
