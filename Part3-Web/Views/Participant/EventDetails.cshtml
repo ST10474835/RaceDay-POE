@@ -1,0 +1,81 @@
+﻿@model EventDetailsViewModel
+@{
+    var ev = Model.Event;
+    ViewData["Title"] = ev.EventName;
+}
+
+<a asp-controller="Home" asp-action="Index" class="small">&larr; Back to events</a>
+
+<div class="card rd-card mt-2 mb-4">
+    @if (!string.IsNullOrEmpty(ev.BannerUrl))
+    {
+        <img src="@ev.BannerUrl" alt="@ev.EventName banner" style="width:100%;max-height:320px;object-fit:cover;" />
+    }
+    else
+    {
+        <div class="rd-banner-placeholder" style="height:220px;">@UiHelper.TypeIcon(ev.EventType)</div>
+    }
+    <div class="card-body p-4">
+        <h2>@ev.EventName</h2>
+        <p class="mb-2">
+            <span class="badge rd-type">@UiHelper.TypeIcon(ev.EventType) @ev.EventType</span>
+            <span class="badge bg-secondary">@ev.Distance.ToString("0.##") km</span>
+            @if (Model.IsPast)
+            {
+                <span class="badge bg-dark">Finished</span>
+            }
+        </p>
+        <p class="mb-1"><strong>Date:</strong> @ev.EventDate.ToString("dddd, dd MMMM yyyy")</p>
+        <p class="mb-1"><strong>Location:</strong> @ev.Location</p>
+        <p class="mb-3"><strong>Organiser:</strong> @ev.OrganiserName</p>
+        @if (!string.IsNullOrWhiteSpace(ev.Description))
+        {
+            <p class="mb-0">@ev.Description</p>
+        }
+    </div>
+</div>
+
+<h4 class="mb-3">Available categories</h4>
+
+@if (!Model.Categories.Any())
+{
+    <div class="card rd-card p-4 text-center">The organiser has not added any categories yet. Please check back soon.</div>
+}
+else
+{
+    <div class="card rd-card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Category</th><th>Type</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var c in Model.Categories.OrderBy(c => c.CategoryType).ThenBy(c => c.CategoryName))
+                    {
+                        <tr>
+                            <td><strong>@c.CategoryName</strong></td>
+                            <td><span class="badge rd-type">@c.CategoryType</span></td>
+                            <td class="text-end">
+                                @if (Model.EnrolledStatus.TryGetValue(c.CategoryId, out var status))
+                                {
+                                    <span class="me-2 small text-muted">You are entered</span>
+                                    <partial name="_StatusBadge" model="status" />
+                                }
+                                else if (Model.IsPast)
+                                {
+                                    <span class="text-muted small">Entries closed</span>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Participant" asp-action="Enrol"
+                                          asp-route-eventId="@ev.EventId" asp-route-categoryId="@c.CategoryId"
+                                          method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-rd btn-sm">Enter event</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
