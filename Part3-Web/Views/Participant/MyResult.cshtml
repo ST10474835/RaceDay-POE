@@ -1,0 +1,48 @@
+﻿@model List<ResultItem>
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<h2 class="mb-3">My results</h2>
+
+@if (!Model.Any())
+{
+    <div class="card rd-card p-5 text-center">
+        <h4>No results yet</h4>
+        <p class="mb-0">Your finish times and positions appear here once an organiser has captured them after an event.</p>
+    </div>
+}
+else
+{
+    <div class="card rd-card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr><th>Event</th><th>Date</th><th>Category</th><th>Finish time</th><th>Position</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td><strong>@r.EventName</strong></td>
+                            <td>@r.EventDate.ToString("dd MMM yyyy")</td>
+                            <td>@r.CategoryName</td>
+                            <td>@(r.FinishTime?.ToString("HH:mm:ss") ?? "-")</td>
+                            <td>
+                                @if (r.Position.HasValue)
+                                {
+                                    <strong>@UiHelper.Ordinal(r.Position.Value)</strong>
+                                    <span class="text-muted">out of @r.TotalFinishers @(r.TotalFinishers == 1 ? "finisher" : "finishers")</span>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
