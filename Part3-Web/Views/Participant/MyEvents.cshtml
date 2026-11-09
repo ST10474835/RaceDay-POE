@@ -1,0 +1,42 @@
+﻿@model List<MyEnrolmentItem>
+@{
+    ViewData["Title"] = "My Events";
+}
+
+<h2 class="mb-3">My events</h2>
+
+@if (!Model.Any())
+{
+    <div class="card rd-card p-5 text-center">
+        <h4>You have not entered any events yet</h4>
+        <p class="mb-3">Browse the upcoming events and pick a category to enter.</p>
+        <div><a class="btn btn-rd" asp-controller="Home" asp-action="Index">Browse events</a></div>
+    </div>
+}
+else
+{
+    <div class="card rd-card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr><th>Event</th><th>Date</th><th>Category</th><th>Entered on</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Participant" asp-action="EventDetails" asp-route-id="@e.EventId"><strong>@e.EventName</strong></a>
+                            </td>
+                            <td>@e.EventDate.ToString("dd MMM yyyy")</td>
+                            <td>@e.CategoryName</td>
+                            <td>@e.EnrolmentDate.ToString("dd MMM yyyy")</td>
+                            <td><partial name="_StatusBadge" model="e.Status" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p class="text-muted small mt-2">Pending means the organiser has not confirmed your entry yet.</p>
+}
