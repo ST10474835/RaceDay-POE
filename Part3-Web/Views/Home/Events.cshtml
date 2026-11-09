@@ -1,0 +1,81 @@
+﻿@model EventsListViewModel
+@{
+    ViewData["Title"] = "Upcoming events";
+    var filtered = !string.IsNullOrWhiteSpace(Model.Search) || !string.IsNullOrWhiteSpace(Model.Type)
+                   || Model.FromDate.HasValue || Model.ToDate.HasValue;
+}
+
+<h2 class="mb-3">Upcoming events</h2>
+
+<form method="get" asp-controller="Home" asp-action="Index" class="card rd-card p-3 mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label small mb-1">Search</label>
+            <input name="search" value="@Model.Search" class="form-control" placeholder="Event name or location" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small mb-1">Type</label>
+            <select name="type" class="form-select">
+                <option value="">All types</option>
+                <option value="Run" selected="@(Model.Type == "Run")">Run</option>
+                <option value="Walk" selected="@(Model.Type == "Walk")">Walk</option>
+                <option value="Cycle" selected="@(Model.Type == "Cycle")">Cycle</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small mb-1">From</label>
+            <input type="date" name="fromDate" value="@Model.FromDate?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small mb-1">To</label>
+            <input type="date" name="toDate" value="@Model.ToDate?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-rd">Filter</button>
+        </div>
+    </div>
+    @if (filtered)
+    {
+        <div class="mt-2"><a asp-controller="Home" asp-action="Index" class="small">Clear filters</a></div>
+    }
+</form>
+
+@if (!Model.Events.Any())
+{
+    <div class="card rd-card p-5 text-center">
+        <h4>@(filtered ? "No events match your filters" : "No upcoming events yet")</h4>
+        <p class="mb-0">@(filtered ? "Try a different search or clear the filters." : "Check back soon, new events are added all the time.")</p>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var ev in Model.Events)
+        {
+            <div class="col-md-6 col-xl-4">
+                <div class="card rd-card h-100">
+                    @if (!string.IsNullOrEmpty(ev.BannerUrl))
+                    {
+                        <img src="@ev.BannerUrl" class="card-img-top" alt="@ev.EventName banner" />
+                    }
+                    else
+                    {
+                        <div class="rd-banner-placeholder">@UiHelper.TypeIcon(ev.EventType)</div>
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@ev.EventName</h5>
+                        <p class="mb-1">
+                            <span class="badge rd-type">@UiHelper.TypeIcon(ev.EventType) @ev.EventType</span>
+                            <span class="badge bg-secondary">@ev.Distance.ToString("0.##") km</span>
+                        </p>
+                        <p class="mb-1">@ev.EventDate.ToString("dd MMM yyyy") &middot; @ev.Location</p>
+                        <p class="text-muted small mb-0">Organised by @ev.OrganiserName</p>
+                    </div>
+                    <div class="card-footer bg-white border-0 pb-3">
+                        <a class="btn btn-rd w-100" asp-controller="Participant" asp-action="EventDetails" asp-route-id="@ev.EventId">View details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
