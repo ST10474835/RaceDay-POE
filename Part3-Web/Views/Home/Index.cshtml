@@ -1,0 +1,52 @@
+﻿@model ProfileInfo
+@{
+    ViewData["Title"] = "Home";
+    var loggedIn = Context.Session.GetInt32(SessionKeys.UserId) != null;
+    var role = Context.Session.GetString(SessionKeys.Role);
+    var name = Context.Session.GetString(SessionKeys.FullName);
+}
+
+@if (!loggedIn)
+{
+    <section class="rd-hero text-center mb-5">
+        <h1 class="display-3">Race day starts here</h1>
+        <p class="lead mb-4">Find your next run, walk or ride, enter in seconds, and track every finish.</p>
+        <a class="btn btn-rd btn-lg me-2" asp-controller="Account" asp-action="Register">Join RaceDay</a>
+        <a class="btn btn-outline-light btn-lg" asp-controller="Account" asp-action="Login">Log in</a>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card rd-card h-100 p-4 text-center">
+                <div class="rd-icon">&#127939;</div>
+                <h4>Runners</h4>
+                <p class="mb-0">Road races from park runs to full marathons.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card rd-card h-100 p-4 text-center">
+                <div class="rd-icon">&#128694;</div>
+                <h4>Walkers</h4>
+                <p class="mb-0">Community walks and charity events across the country.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card rd-card h-100 p-4 text-center">
+                <div class="rd-icon">&#128692;</div>
+                <h4>Cyclists</h4>
+                <p class="mb-0">Tours and time trials for every distance.</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card rd-card p-4">
+        <h2>Welcome, @name</h2>
+        <p class="mb-1">You are logged in as <span class="badge rd-role-badge">@role</span></p>
+        @if (Model != null)
+        {
+            <p class="text-muted mb-0">Signed in with @Model.Email (loaded from the RaceDay API).</p>
+        }
+    </div>
+}
