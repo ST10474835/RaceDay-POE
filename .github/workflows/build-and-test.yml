@@ -1,4 +1,4 @@
-name: Build and Test API
+name: Build and Test RaceDay
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Set up .NET 8
         uses: actions/setup-dotnet@v4
         with:
@@ -30,3 +30,12 @@ jobs:
 
       - name: Run unit tests
         run: dotnet test Part2-API/RaceDay.Api.Tests/RaceDay.Api.Tests.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Restore MVC project
+        run: dotnet restore Part3-Web/RaceDay.Web.csproj
+
+      - name: Build MVC project
+        run: dotnet build Part3-Web/RaceDay.Web.csproj --configuration Release --no-restore
+
+      - name: Build MVC Docker image
+        run: docker build -t raceday-web Part3-Web
