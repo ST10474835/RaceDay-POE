@@ -1,0 +1,58 @@
+﻿@model ResultsPageModel
+@{
+    ViewData["Title"] = "Results";
+}
+
+<a asp-action="Events" class="small">&larr; Back to my events</a>
+<h2 class="mt-2">Results: @Model.Event.EventName</h2>
+<p class="text-muted">Enter each participant's finish time (hh:mm:ss) and finishing position. Saved results are published to the participant straight away.</p>
+
+<div class="card rd-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th>Participant</th><th>Category</th><th>Result</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Rows)
+                {
+                    <tr>
+                        <td><strong>@row.Enrolment.ParticipantName</strong></td>
+                        <td>@row.Enrolment.CategoryName</td>
+                        <td>
+                            @if (row.Result != null)
+                            {
+                                <span class="badge rd-status rd-status-confirmed">Published</span>
+                                <span class="ms-2">
+                                    @(row.Result.FinishTime?.ToString("HH:mm:ss")) &middot;
+                                    @(row.Result.Position.HasValue? UiHelper.Ordinal(row.Result.Position.Value) : "")
+                                </span>
+                            }
+                            else
+                            {
+                                <form asp-action="CaptureResult" asp-route-eventId="@Model.Event.EventId"
+                                      asp-route-enrolmentId="@row.Enrolment.EnrolmentId" method="post"
+                                      class="row g-2 align-items-center">
+                                    <div class="col-auto">
+                                        <input type="time" step="1" name="finishTime" class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="number" name="position" min="1" placeholder="Position"
+                                               class="form-control form-control-sm" style="width:110px" />
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-rd btn-sm">Capture and publish</button>
+                                    </div>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Rows.Any())
+                {
+                    <tr><td colspan="3" class="text-center text-muted py-4">No participants have enrolled yet, so there are no results to enter.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
