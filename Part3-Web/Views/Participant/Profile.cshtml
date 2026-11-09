@@ -1,0 +1,55 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h2 class="mb-3">My profile</h2>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card rd-card p-4 text-center">
+            @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+            {
+                <img src="@Model.ProfilePictureUrl" alt="Profile picture" class="rd-profile-pic mx-auto mb-3" />
+            }
+            else
+            {
+                <div class="rd-profile-pic mx-auto mb-3 d-flex align-items-center justify-content-center bg-secondary text-white display-4">
+                    @(Model.FullName.Length > 0 ? Model.FullName[0].ToString().ToUpper() : "?")
+                </div>
+            }
+            <form asp-controller="Participant" asp-action="ProfilePicture" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" class="form-control form-control-sm mb-2" />
+                <button type="submit" class="btn btn-outline-rd btn-sm w-100">Upload picture</button>
+            </form>
+            <div class="form-text">JPG, PNG, GIF or WEBP, up to 5 MB.</div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card rd-card p-4">
+            <form asp-controller="Participant" asp-action="Profile" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <input type="hidden" asp-for="Role" />
+                <input type="hidden" asp-for="ProfilePictureUrl" />
+                <input type="hidden" asp-for="DateRegistered" />
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <p class="text-muted small">
+                    Role: <span class="badge rd-role-badge">@Model.Role</span>
+                    &middot; Member since @Model.DateRegistered.ToString("dd MMM yyyy")
+                </p>
+                <button type="submit" class="btn btn-rd">Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>
